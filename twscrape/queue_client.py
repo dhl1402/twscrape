@@ -207,6 +207,7 @@ class QueueClient:
             try:
                 rep = await ctx.clt.request(method, url, params=params)
                 setattr(rep, "__username", ctx.acc.username)
+                print('TWSCRAPER', ctx.acc.username)
                 await self._check_rep(rep)
 
                 ctx.req_count += 1  # count only successful
