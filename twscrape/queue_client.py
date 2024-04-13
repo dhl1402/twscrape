@@ -208,7 +208,7 @@ class QueueClient:
             try:
                 start_time = dt.datetime.now()
                 rep = await ctx.clt.request(method, url, params=params)
-                print(f"twscrape request time: {(dt.datetime.now() - start_time).total_seconds()} seconds")
+                print(f"twscrape request time for {params['variables']}: {(dt.datetime.now() - start_time).total_seconds()} seconds")
                 setattr(rep, "__username", ctx.acc.username)
                 await self._check_rep(rep)
 
