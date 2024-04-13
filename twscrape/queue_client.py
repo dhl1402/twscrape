@@ -122,6 +122,7 @@ class QueueClient:
 
         try:
             res = rep.json()
+            logger.info(f"Response: {res}")
         except json.JSONDecodeError:
             res: Any = {"_raw": rep.text}
 
@@ -160,6 +161,7 @@ class QueueClient:
             raise HandledError()
 
         if err_msg.startswith("(32) Could not authenticate you"):
+            logger.warning(f"Err_msg: {err_msg}")
             logger.warning(f"Session expired or banned: {log_msg}")
             await self._close_ctx(-1, inactive=True, msg=err_msg)
             raise HandledError()
