@@ -1,3 +1,4 @@
+import datetime as dt
 import json
 import os
 from typing import Any
@@ -96,7 +97,7 @@ class QueueClient:
             await self.pool.lock_until(ctx.acc.username, self.queue, reset_at, ctx.req_count)
             return
 
-        await self.pool.lock_until(ctx.acc.username, self.queue, utc.ts() + 60 * 2, ctx.req_count)
+        await self.pool.unlock(ctx.acc.username, self.queue, ctx.req_count)
 
     async def _get_ctx(self):
         if self.ctx:
@@ -205,9 +206,10 @@ class QueueClient:
                 return None
 
             try:
+                start_time = dt.datetime.now()
                 rep = await ctx.clt.request(method, url, params=params)
+                print(f"Request time: {dt.datetime.now() - start_time}")
                 setattr(rep, "__username", ctx.acc.username)
-                print('TWSCRAPER', ctx.acc.username)
                 await self._check_rep(rep)
 
                 ctx.req_count += 1  # count only successful
