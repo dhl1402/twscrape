@@ -122,7 +122,6 @@ class QueueClient:
 
         try:
             res = rep.json()
-            logger.info(f"Response: {res}")
         except json.JSONDecodeError:
             res: Any = {"_raw": rep.text}
 
