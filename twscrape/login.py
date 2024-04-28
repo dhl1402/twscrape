@@ -48,13 +48,13 @@ async def login_initiate(client: AsyncClient) -> Response:
     return rep
 
 
-async def login_alternate_identifier(ctx: TaskCtx, *, username: str) -> Response:
+async def login_alternate_identifier(ctx: TaskCtx, *, identifier: str) -> Response:
     payload = {
         "flow_token": ctx.prev["flow_token"],
         "subtask_inputs": [
             {
                 "subtask_id": "LoginEnterAlternateIdentifierSubtask",
-                "enter_text": {"text": username, "link": "next_link"},
+                "enter_text": {"text": identifier, "link": "next_link"},
             }
         ],
     }
@@ -240,7 +240,7 @@ async def next_login_task(ctx: TaskCtx, rep: Response):
             if task_id == "LoginJsInstrumentationSubtask":
                 return await login_instrumentation(ctx)
             if task_id == "LoginEnterAlternateIdentifierSubtask":
-                return await login_alternate_identifier(ctx, username=ctx.acc.username)
+                return await login_alternate_identifier(ctx, identifier=ctx.acc.email if x["enter_text"]["hint_text"] == "Phone or email" else ctx.acc.username)
         except Exception as e:
             ctx.acc.error_msg = f"login_step={task_id} err={e}"
             raise e
