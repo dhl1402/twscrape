@@ -164,7 +164,7 @@ class AccountsPool:
             return False
         except Exception as e:
             logger.error(f"Failed to login '{account.username}': {e}")
-            account.error_msg = e if account.error_msg is None else account.error_msg
+            account.error_msg = f'{e}' if account.error_msg is None else account.error_msg
             return False
         finally:
             await self.save(account)
