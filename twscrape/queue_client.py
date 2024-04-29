@@ -129,7 +129,9 @@ class QueueClient:
         limit_remaining = int(rep.headers.get("x-rate-limit-remaining", -1))
         limit_reset = int(rep.headers.get("x-rate-limit-reset", -1))
         limit_max = int(rep.headers.get("x-rate-limit-limit", -1))
-        logger.info(f"Username: {username} - rate limit: {limit_remaining}/{limit_max} - reset at: {datetime.datetime.fromtimestamp(limit_reset)}")
+        
+        logger.info(f"Username: {username} - rate limit remaining: {limit_remaining}/{limit_max} - reset at: {datetime.datetime.fromtimestamp(limit_reset)}")
+        
         err_msg = "OK"
         if "errors" in res:
             err_msg = set([f'({x.get("code", -1)}) {x["message"]}' for x in res["errors"]])
@@ -234,6 +236,7 @@ class QueueClient:
                 if connection_retry >= 3:
                     raise e
             except Exception as e:
+                logger.error(f"Unknown error: {type(e)}: {e}")
                 unknown_retry += 1
                 if unknown_retry >= 3:
                     msg = [
