@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 from typing import Any
@@ -110,7 +111,7 @@ class QueueClient:
         self.ctx = Ctx(acc, clt)
         return self.ctx
 
-    async def _check_rep(self, rep: Response) -> None:
+    async def _check_rep(self, username, rep: Response) -> None:
         """
         This function can raise Exception and request will be retried or aborted
         Or if None is returned, response will passed to api parser as is
@@ -126,8 +127,8 @@ class QueueClient:
 
         limit_remaining = int(rep.headers.get("x-rate-limit-remaining", -1))
         limit_reset = int(rep.headers.get("x-rate-limit-reset", -1))
-        # limit_max = int(rep.headers.get("x-rate-limit-limit", -1))
-
+        limit_max = int(rep.headers.get("x-rate-limit-limit", -1))
+        logger.info(f"Username: {username} - rate limit: {limit_remaining}/{limit_max} - reset at: {datetime.datetime.fromtimestamp(limit_reset)}")
         err_msg = "OK"
         if "errors" in res:
             err_msg = set([f'({x.get("code", -1)}) {x["message"]}' for x in res["errors"]])
@@ -212,7 +213,7 @@ class QueueClient:
             try:
                 rep = await ctx.clt.request(method, url, params=params)
                 setattr(rep, "__username", ctx.acc.username)
-                await self._check_rep(rep)
+                await self._check_rep(ctx.acc.username, rep)
 
                 ctx.req_count += 1  # count only successful
                 unknown_retry, connection_retry = 0, 0
