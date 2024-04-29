@@ -159,10 +159,12 @@ class AccountsPool:
             return True
         except HTTPStatusError as e:
             rep = e.response
+            account.error_msg = f"{rep.status_code} - {rep.text}" if account.error_msg is None else account.error_msg
             logger.error(f"Failed to login '{account.username}': {rep.status_code} - {rep.text}")
             return False
         except Exception as e:
             logger.error(f"Failed to login '{account.username}': {e}")
+            account.error_msg = e if account.error_msg is None else account.error_msg
             return False
         finally:
             await self.save(account)
