@@ -288,7 +288,9 @@ class AccountsPool:
     async def get_for_queue_or_wait(self, queue: str) -> Account | None:
         msg_shown = False
         while True:
+            start_time = datetime.now()
             account = await self.get_for_queue(queue)
+            logger.info(f"get_for_queue_or_wait: {datetime.now() - start_time}")
             if not account:
                 if self._raise_when_no_account or get_env_bool("TWS_RAISE_WHEN_NO_ACCOUNT"):
                     raise NoAccountError(f"No account available for queue {queue}")
