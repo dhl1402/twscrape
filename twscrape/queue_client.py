@@ -147,7 +147,7 @@ class QueueClient:
 
         # general api rate limit
         if limit_remaining < 45 and limit_reset > 0:
-            logger.debug(f"Rate limited: {log_msg}")
+            logger.info(f"Rate limited: {log_msg}")
             await self._close_ctx(limit_reset)
             raise HandledError()
 
