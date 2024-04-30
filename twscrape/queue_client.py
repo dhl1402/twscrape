@@ -97,8 +97,8 @@ class QueueClient:
             await self.pool.lock_until(ctx.acc.username, self.queue, reset_at, ctx.req_count)
             return
 
-        # await self.pool.lock_until(ctx.acc.username, self.queue, utc.ts() + 60 * 5, ctx.req_count)
-        await self.pool.unlock(ctx.acc.username, self.queue, ctx.req_count)
+        await self.pool.lock_until(ctx.acc.username, self.queue, utc.ts() + 60, ctx.req_count)
+        # await self.pool.unlock(ctx.acc.username, self.queue, ctx.req_count)
 
     async def _get_ctx(self):
         if self.ctx:
