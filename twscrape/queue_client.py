@@ -97,8 +97,8 @@ class QueueClient:
             await self.pool.lock_until(ctx.acc.username, self.queue, reset_at, ctx.req_count)
             return
 
-        await self.pool.lock_until(ctx.acc.username, self.queue, utc.ts() + 60, ctx.req_count)
-        # await self.pool.unlock(ctx.acc.username, self.queue, ctx.req_count)
+        # await self.pool.lock_until(ctx.acc.username, self.queue, utc.ts() + 60, ctx.req_count)
+        await self.pool.unlock(ctx.acc.username, self.queue, ctx.req_count)
 
     async def _get_ctx(self):
         if self.ctx:
@@ -146,7 +146,7 @@ class QueueClient:
             exit(1)
 
         # general api rate limit
-        if limit_remaining == 0 and limit_reset > 0:
+        if limit_remaining <= 42 and limit_reset > 0:
             logger.debug(f"Rate limited: {log_msg}")
             await self._close_ctx(limit_reset)
             raise HandledError()
