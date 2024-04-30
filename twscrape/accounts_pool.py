@@ -33,8 +33,8 @@ def guess_delim(line: str):
 
 
 class AccountsPool:
-    _order_by: str = "RANDOM()"
-    # _order_by: str = "username"
+    # _order_by: str = "RANDOM()"
+    _order_by: str = "username"
 
     def __init__(
         self,
@@ -290,7 +290,7 @@ class AccountsPool:
         while True:
             start_time = datetime.now()
             account = await self.get_for_queue(queue)
-            logger.info(f"get_for_queue_or_wait: {datetime.now() - start_time}")
+            logger.info(f"get_for_queue_or_wait: {(datetime.now() - start_time).total_seconds()}")
             if not account:
                 if self._raise_when_no_account or get_env_bool("TWS_RAISE_WHEN_NO_ACCOUNT"):
                     raise NoAccountError(f"No account available for queue {queue}")
