@@ -249,11 +249,11 @@ class Tweet(JSONTrait):
         )
 
         # issue #42 – restore full rt text
-        rt = doc.retweetedTweet
-        if rt is not None and rt.user is not None and doc.rawContent.endswith("…"):
-            rt_msg = f"RT @{rt.user.username}: {rt.rawContent}"
-            if doc.rawContent != rt_msg:
-                doc.rawContent = rt_msg
+        # rt = doc.retweetedTweet
+        # if rt is not None and rt.user is not None and doc.rawContent.endswith("…"):
+        #     rt_msg = f"RT @{rt.user.username}: {rt.rawContent}"
+        #     if doc.rawContent != rt_msg:
+        #         doc.rawContent = rt_msg
 
         return doc
 
